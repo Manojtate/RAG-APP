@@ -29,14 +29,7 @@ public class ChatController {
     @GetMapping("/user/chat")
     public ResponseEntity<String> useUserPrompt(
             @RequestParam(value = "q") String query) {
-        Prompt prompt = new Prompt(query);
         String strQuery = "As an expert in coding always write code in java .Now replay for this question :{query}";
-
-//        var userSpec = PromptUserSpec.builder()
-//                .text(strQuery)
-//                .param("query", query);
-//
-//        chatClient.prompt().user(userSpec);
         var ResponseContent = this.chatClient.
                 prompt().user(u -> u.text(strQuery).param("query", query))
                 .call().content();
