@@ -19,8 +19,8 @@ public class ChatService {
     @Value("classpath:/prompts/system-message.st")
     private Resource syetmMessage ;
 
-    public ChatService(ChatClient.Builder builder) {
-        this.chatClient = builder.build();
+    public ChatService(ChatClient chatClient) {
+        this.chatClient = chatClient;
     }
 
     public String chatTemplate() {
