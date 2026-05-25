@@ -1,5 +1,6 @@
 package com.spring.ai.firstProject.first_project.config;
 
+import com.spring.ai.firstProject.first_project.advisors.TokenPrintAdvisor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
@@ -16,7 +17,7 @@ public class AiConfig {
     public ChatClient chatClient(ChatClient.Builder builder) {
 
         return builder
-                .defaultAdvisors(new SimpleLoggerAdvisor() ,new SafeGuardAdvisor(List.of("Sensitive")))
+                .defaultAdvisors(new TokenPrintAdvisor(),new SimpleLoggerAdvisor() ,new SafeGuardAdvisor(List.of("Sensitive")))
                 .defaultOptions(
                         ChatOptions.builder()
                                 .temperature(0.3)
