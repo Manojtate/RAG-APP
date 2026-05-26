@@ -5,6 +5,7 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.Map;
 
@@ -14,10 +15,10 @@ public class ChatService {
     private final ChatClient chatClient;
 
     @Value("classpath:/prompts/user-message.st")
-    private Resource userMessage ;
+    private Resource userMessage;
 
     @Value("classpath:/prompts/system-message.st")
-    private Resource syetmMessage ;
+    private Resource syetmMessage;
 
     public ChatService(ChatClient chatClient) {
         this.chatClient = chatClient;
@@ -37,18 +38,28 @@ public class ChatService {
 //        return this.chatClient.prompt(prompt).call().content();
 
 
-
         // using Fluent api
-        return  this. chatClient.prompt()
-                  .system(system-> system.text(this.syetmMessage))
-                  .user(user->user.text(this.userMessage).params(Map.of(
-                          "techName", "Spring",
-                          "exampleName", "SpringBoot")))
-                  .call()
-                  .content();
-
+        return this.chatClient.prompt()
+                .system(system -> system.text(this.syetmMessage))
+                .user(user -> user.text(this.userMessage).params(Map.of(
+                        "techName", "Spring",
+                        "exampleName", "SpringBoot")))
+                .call()
+                .content();
 
 
     }
 
+    public Flux<String> streamChat(String query) {
+
+        return this.chatClient.prompt()
+                .system(system -> system.text(this.syetmMessage))
+                .user(user -> user.text(this.userMessage).params(Map.of(
+                        "techName", "Spring",
+                        "exampleName", "SpringBoot")).param("concept", query))
+                .stream()
+                .content();
+
+
+    }
 }

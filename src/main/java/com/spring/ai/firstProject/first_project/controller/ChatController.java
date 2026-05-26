@@ -1,18 +1,21 @@
 package com.spring.ai.firstProject.first_project.controller;
 
+import com.spring.ai.firstProject.first_project.services.ChatService;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping
 public class ChatController {
 
+    @Autowired
+    private ChatService chatService;
 
     private ChatClient chatClient;
 
@@ -35,9 +38,14 @@ public class ChatController {
                 prompt().user(u -> u.text(strQuery).param("query", query))
                 .call().content();
 
-
         return ResponseEntity.ok(ResponseContent);
     }
 
 
+    @GetMapping("/user/stream-chat")
+    public ResponseEntity<Flux<String>> streamChat(
+            @RequestParam(value = "q") String query) {
+
+        return ResponseEntity.ok(this.chatService.streamChat(query));
+    }
 }
