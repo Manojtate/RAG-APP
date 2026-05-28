@@ -2,6 +2,7 @@ package com.spring.ai.firstProject.first_project.controller;
 
 import com.spring.ai.firstProject.first_project.services.ChatService;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,5 +48,21 @@ public class ChatController {
             @RequestParam(value = "q") String query) {
 
         return ResponseEntity.ok(this.chatService.streamChat(query));
+    }
+
+    @GetMapping("/chatMemory")
+    public ResponseEntity<String> ChatMemory(
+            @RequestParam("q") String query,
+            @RequestParam("conversationId") String conversationId) {
+
+        var responseContent = this.chatClient
+                .prompt(query)
+                .advisors(advisor -> advisor.param(
+                        ChatMemory.CONVERSATION_ID,
+                        conversationId))
+                .call()
+                .content();
+
+        return ResponseEntity.ok(responseContent);
     }
 }
