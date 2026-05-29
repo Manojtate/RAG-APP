@@ -52,7 +52,7 @@ public class ChatController {
 
     @GetMapping("/chatMemory")
     public ResponseEntity<String> ChatMemory(
-            @RequestParam("q") String query,
+            @RequestParam(value = "q" , required =true) String query,
             @RequestParam("conversationId") String conversationId) {
 
         var responseContent = this.chatClient
