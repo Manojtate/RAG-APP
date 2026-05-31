@@ -1,5 +1,6 @@
 package com.spring.ai.firstProject.first_project;
 
+import com.spring.ai.firstProject.first_project.helper.Helper;
 import com.spring.ai.firstProject.first_project.services.ChatService;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -16,10 +17,9 @@ class FirstProjectApplicationTests {
     void contextLoads() {
     }
 
-    @Disabled
-    void testChatService() {
-        var output = chatService.chatTemplate();
-        System.out.println(output);
-    }
+    @Test
+    void savetoVectorDB() {
+        chatService.saveData(Helper.getData());
 
+    }
 }

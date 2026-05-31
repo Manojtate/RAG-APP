@@ -1,18 +1,25 @@
 package com.spring.ai.firstProject.first_project.services;
 
-
+import org.springframework.ai.document.Document;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.vectorstore.VectorStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatService {
 
     private final ChatClient chatClient;
+
+    @Autowired
+    private VectorStore vectorStore;
 
     @Value("classpath:/prompts/user-message.st")
     private Resource userMessage;
@@ -20,8 +27,10 @@ public class ChatService {
     @Value("classpath:/prompts/system-message.st")
     private Resource syetmMessage;
 
-    public ChatService(ChatClient chatClient) {
+    public ChatService(ChatClient chatClient , VectorStore vectorStore) {
+
         this.chatClient = chatClient;
+        this.vectorStore=vectorStore;
     }
 
     public String chatTemplate() {
@@ -62,4 +71,13 @@ public class ChatService {
 
 
     }
+
+    public  void saveData(List<String> list)
+    {
+        List<Document>documentList = list.stream().map(item -> new Document(item)).collect(Collectors.toList());
+        this.vectorStore.add(documentList);
+        System.out.println("data is saved successfully");
+    }
+
+
 }
