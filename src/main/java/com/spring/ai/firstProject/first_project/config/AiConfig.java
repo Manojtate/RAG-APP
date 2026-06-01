@@ -8,8 +8,8 @@ import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
 import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.InMemoryChatMemoryRepository;
 import org.springframework.ai.chat.memory.MessageWindowChatMemory;
-import org.springframework.ai.chat.memory.repository.jdbc.JdbcChatMemoryRepository;
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,13 +22,15 @@ public class AiConfig {
     private Logger logger = LoggerFactory.getLogger(AiConfig.class);
 
     @Bean
-    public ChatMemory chatMemory(JdbcChatMemoryRepository jdbcChatMemoryRepository)
-    {
-           return MessageWindowChatMemory.builder()
-                   .chatMemoryRepository(jdbcChatMemoryRepository)
-                   .maxMessages(10)
-                   .build();
+    public ChatMemory chatMemory() {
+
+        InMemoryChatMemoryRepository inMemoryChatMemoryRepository = new InMemoryChatMemoryRepository();
+        return MessageWindowChatMemory.builder()
+                .chatMemoryRepository(inMemoryChatMemoryRepository)
+                .maxMessages(10)
+                .build();
     }
+
 
     @Bean
     public ChatClient chatClient(ChatClient.Builder builder, ChatMemory chatMemory) {

@@ -1,1 +1,2 @@
-"What is {techName}? tell me {exampleName} "
+User query
+{query}
