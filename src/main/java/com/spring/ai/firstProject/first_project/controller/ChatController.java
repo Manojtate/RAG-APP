@@ -31,4 +31,12 @@ public class ChatController {
         return ResponseEntity.ok(this.chatService.vectorDBSearch(query, conversationId));
     }
 
+    @GetMapping("/user/vectorDBAutomaticSearch/search")
+    public ResponseEntity<String> vectorDBAutomaticSearch(
+            @RequestParam(value = "q", required = true) String query,
+            @RequestParam("conversationId") String conversationId) {
+
+        return ResponseEntity.ok(this.chatService.vectorDBAutomaticSearch(query, conversationId));
+    }
+
 }

@@ -1,9 +1,11 @@
 package com.spring.ai.firstProject.first_project.services;
 
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import com.spring.ai.firstProject.first_project.advisors.TokenPrintAdvisor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
@@ -73,4 +75,34 @@ public class ChatService {
     }
 
 
+    public String vectorDBAutomaticSearch(String query, String conversationId) {
+
+
+    //    QuestionAnswerAdvisor advisor = QuestionAnswerAdvisor.builder(vectorStore).build();
+        QuestionAnswerAdvisor advisor = QuestionAnswerAdvisor
+                .builder(vectorStore)
+                .searchRequest(
+                        SearchRequest
+                                .builder()
+                                .topK(3)
+                                .similarityThreshold(0.5)
+                                .build()
+
+                               )
+                .build();
+
+        return this.chatClient.prompt()
+
+                .user(user ->
+                        user.text(this.userMessage)
+                                .param("query", query))
+
+                .advisors(advisorSpec ->
+                        advisorSpec.param(ChatMemory.CONVERSATION_ID, conversationId))
+                .advisors(advisor)
+
+                .call()
+                .content();
+
+    }
 }
