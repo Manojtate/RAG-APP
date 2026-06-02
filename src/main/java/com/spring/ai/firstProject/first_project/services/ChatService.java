@@ -8,6 +8,9 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.document.Document;
+import org.springframework.ai.rag.advisor.RetrievalAugmentationAdvisor;
+import org.springframework.ai.rag.generation.augmentation.ContextualQueryAugmenter;
+import org.springframework.ai.rag.retrieval.search.VectorStoreDocumentRetriever;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,7 +78,7 @@ public class ChatService {
     }
 
 
-    public String vectorDBAutomaticSearch(String query, String conversationId) {
+    public String searchvectorDBAutomaticSearchQuestionAnswerAdvisor(String query, String conversationId) {
 
 
     //    QuestionAnswerAdvisor advisor = QuestionAnswerAdvisor.builder(vectorStore).build();
@@ -103,6 +106,36 @@ public class ChatService {
 
                 .call()
                 .content();
+
+    }
+
+    public String vectorDBAutomaticSearchRetrievalAugmentationAdvisor(String query, String conversationId) {
+
+      var advisor =  RetrievalAugmentationAdvisor.builder()
+                .documentRetriever(VectorStoreDocumentRetriever
+                        .builder()
+                        .vectorStore(this.vectorStore)
+                        .topK(3)
+                        .similarityThreshold(0.5)
+                        .build())
+               .queryAugmenter(ContextualQueryAugmenter.builder().allowEmptyContext(true).build())
+                .build();
+
+
+        return this.chatClient.prompt()
+
+                .user(user ->
+                        user.text(this.userMessage)
+                                .param("query", query))
+
+                .advisors(advisorSpec ->
+                        advisorSpec.param(ChatMemory.CONVERSATION_ID, conversationId))
+                .advisors(advisor)
+
+                .call()
+                .content();
+
+
 
     }
 }

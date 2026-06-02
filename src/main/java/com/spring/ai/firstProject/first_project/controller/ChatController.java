@@ -32,11 +32,19 @@ public class ChatController {
     }
 
     @GetMapping("/user/vectorDBAutomaticSearch/search")
-    public ResponseEntity<String> vectorDBAutomaticSearch(
+    public ResponseEntity<String>searchvectorDBAutomaticSearchQuestionAnswerAdvisor(
             @RequestParam(value = "q", required = true) String query,
             @RequestParam("conversationId") String conversationId) {
 
-        return ResponseEntity.ok(this.chatService.vectorDBAutomaticSearch(query, conversationId));
+        return ResponseEntity.ok(this.chatService.searchvectorDBAutomaticSearchQuestionAnswerAdvisor(query, conversationId));
+    }
+
+    @GetMapping("/user/vectorDBAutomaticSearch/Retrieval/search")
+    public ResponseEntity<String> vectorDBAutomaticSearchRetrievalAugmentationAdvisor(
+            @RequestParam(value = "q", required = true) String query,
+            @RequestParam("conversationId") String conversationId) {
+
+        return ResponseEntity.ok(this.chatService.vectorDBAutomaticSearchRetrievalAugmentationAdvisor(query, conversationId));
     }
 
 }
